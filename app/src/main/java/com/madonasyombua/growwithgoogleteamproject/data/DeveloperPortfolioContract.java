@@ -11,7 +11,7 @@ public class DeveloperPortfolioContract {
         public static final String TABLE_USER           = "users";
         public static final String COLUMN_FIRSTNAME     = "firstName";
         public static final String COLUMN_LASTNAME      = "lastName";
-        public static final String COLUMN_EMAIL         = "firstName";
+        public static final String COLUMN_EMAIL         = "email";
         public static final String COLUMN_CREATED       = "created";
 
 

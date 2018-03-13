@@ -1,6 +1,8 @@
 package com.madonasyombua.growwithgoogleteamproject.ui;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -24,9 +26,12 @@ import com.google.android.gms.tasks.Task;
 import com.madonasyombua.growwithgoogleteamproject.actvities.MainActivity;
 import com.madonasyombua.growwithgoogleteamproject.R;
 import com.madonasyombua.growwithgoogleteamproject.adapter.FragmentsAdapter;
+import com.madonasyombua.growwithgoogleteamproject.data.DeveloperPortfolioContract;
 import com.madonasyombua.growwithgoogleteamproject.databinding.ActivityLoginBinding;
+import com.madonasyombua.growwithgoogleteamproject.helpers.DeveloperPortfolioDbHelper;
 import com.madonasyombua.growwithgoogleteamproject.login.AppLoginManager;
 import com.madonasyombua.growwithgoogleteamproject.login.LoginStatusManager;
+import com.madonasyombua.growwithgoogleteamproject.models.User;
 import com.madonasyombua.growwithgoogleteamproject.ui.fragment.LoginFragment;
 import com.madonasyombua.growwithgoogleteamproject.ui.fragment.RegisterFragment;
 import com.madonasyombua.growwithgoogleteamproject.ui.intro.OnBoardingActivity;
@@ -50,6 +55,8 @@ public class LoginActivity extends AppCompatActivity implements AppLoginManager.
     private static final String TAG = "LoginActivity";
     static final int SHOW_INTRO = 1;
 
+    private SQLiteDatabase mDb;
+
     GoogleSignInClient mGoogleSignInClient;
     private static final int GOOGLE_SIGN_IN_REQUEST_CODE = 500;
 
@@ -64,6 +71,10 @@ public class LoginActivity extends AppCompatActivity implements AppLoginManager.
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
 
         mCallbackManager = CallbackManager.Factory.create();
+
+        DeveloperPortfolioDbHelper dbHelper = new DeveloperPortfolioDbHelper(this);
+
+        mDb = dbHelper.getWritableDatabase();
 
         // Binding and listening to all the buttons
         binding.btnLogin.setOnClickListener(this);
@@ -292,11 +303,19 @@ public class LoginActivity extends AppCompatActivity implements AppLoginManager.
             if (account != null) {
 
                 // TODO: All user's basic info such as name can now be obtained from the account object
-                String personName = account.getDisplayName();
-                String personEmail = account.getEmail();
+                String firstname = account.getGivenName();
+                String lastname = account.getFamilyName();
+                String email = account.getEmail();
 
                 // For debugging purposes only
-                Log.d(TAG, "Google info " + personName + " - " + personEmail);
+                Log.d(TAG, "Google info " + firstname + " " + lastname + " - " + email);
+
+                // Adding the user to db
+                if (addUserToDb(firstname, lastname, email) > 0) {
+                    Toast.makeText(getApplicationContext(), "Successfully added user to db", Toast.LENGTH_LONG ).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Failed adding user to db", Toast.LENGTH_LONG ).show();
+                }
 
                 // Start MainActivity
                 Intent mainActivityIntent = new Intent(getBaseContext(), MainActivity.class);
@@ -310,6 +329,28 @@ public class LoginActivity extends AppCompatActivity implements AppLoginManager.
             // Google sign in failed
             e.printStackTrace();
         }
+
+    }
+
+
+    /**
+     * Adding new user to the SQlite db
+     *
+     * @param firstname - user's firstname
+     * @param lastname  - user's lastname
+     * @param email     - user's email address
+     * @return          - id of the newly created user
+     */
+    private long addUserToDb(String firstname, String lastname, String email) {
+
+        ContentValues contentValues = new ContentValues();
+
+        // Add data
+        contentValues.put(DeveloperPortfolioContract.UserEntry.COLUMN_FIRSTNAME, firstname);
+        contentValues.put(DeveloperPortfolioContract.UserEntry.COLUMN_LASTNAME, lastname);
+        contentValues.put(DeveloperPortfolioContract.UserEntry.COLUMN_EMAIL, email);
+
+        return mDb.insert(DeveloperPortfolioContract.UserEntry.TABLE_USER, null, contentValues);
 
     }
 
