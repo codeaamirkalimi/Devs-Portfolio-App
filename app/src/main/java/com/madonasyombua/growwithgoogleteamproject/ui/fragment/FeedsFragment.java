@@ -21,6 +21,8 @@ import com.madonasyombua.growwithgoogleteamproject.models.Post;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -31,12 +33,14 @@ import java.util.ArrayList;
 public class FeedsFragment extends Fragment{
     private OnFragmentInteractionListener mListener;
 
-    private RecyclerView mRecyclerView;
+    @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
+    @BindView(R.id.swipeRefresh) SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.add_feeds) FloatingActionButton fab;
+    @BindView(R.id.base) CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.displayEmpty)TextView displayEmpty;
+
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private CoordinatorLayout coordinatorLayout;
-    private TextView displayEmpty;
 
     private ArrayList<Post> mPosts;
     //private RequestQueue requestQueue;
@@ -81,13 +85,9 @@ public class FeedsFragment extends Fragment{
 
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.base);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
        // mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorAccent));
 
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add_feeds);
         fab.setOnClickListener(
                 new View.OnClickListener() {
 
@@ -98,7 +98,6 @@ public class FeedsFragment extends Fragment{
                 }
         );
 
-        displayEmpty = (TextView) view.findViewById(R.id.displayEmpty);
         displayEmpty.setVisibility(View.GONE);
 
         // use this setting to improve performance if you know that changes
