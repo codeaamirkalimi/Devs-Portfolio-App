@@ -1,6 +1,8 @@
 package com.madonasyombua.growwithgoogleteamproject.login;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -8,7 +10,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.madonasyombua.growwithgoogleteamproject.actvities.MainActivity;
 import com.madonasyombua.growwithgoogleteamproject.models.User;
+import com.madonasyombua.growwithgoogleteamproject.ui.LoginActivity;
 
 /**
  * Created by mahersoua on 23/02/2018.
@@ -67,6 +71,14 @@ public class AppLoginManager {
                     }
                 });
     }
+
+    public static void signout(final Context context){
+        FirebaseAuth.getInstance().signOut();
+        context.startActivity(new Intent(context, LoginActivity.class));
+
+        Toast.makeText(context, "Signed out", Toast.LENGTH_SHORT).show();
+    }
+
 
     public interface LoginInterface {
         void onSigninSuccess ();

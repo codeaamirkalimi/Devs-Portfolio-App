@@ -35,7 +35,6 @@ public class FeedsFragment extends Fragment{
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.swipeRefresh) SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.add_feeds) FloatingActionButton fab;
     @BindView(R.id.base) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.displayEmpty)TextView displayEmpty;
 
@@ -88,6 +87,7 @@ public class FeedsFragment extends Fragment{
        // mSwipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorAccent));
 
 
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.add_feeds);
         fab.setOnClickListener(
                 new View.OnClickListener() {
 
@@ -97,6 +97,7 @@ public class FeedsFragment extends Fragment{
                     }
                 }
         );
+
 
         displayEmpty.setVisibility(View.GONE);
 
